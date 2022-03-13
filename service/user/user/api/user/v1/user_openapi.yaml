@@ -1,0 +1,59 @@
+components:
+  schemas:
+    ApiUserV1CreateUserInfo:
+      properties:
+        mobile:
+          type: string
+        nickName:
+          type: string
+        password:
+          type: string
+      type: object
+    ApiUserV1UserInfoResponse:
+      properties:
+        birthday:
+          format: int64
+          type: integer
+        gender:
+          type: string
+        id:
+          format: int64
+          type: integer
+        mobile:
+          type: string
+        nickName:
+          type: string
+        password:
+          type: string
+        role:
+          format: int32
+          type: integer
+      type: object
+info:
+  description: api.user.v1
+  title: api.user.v1
+  version: "1"
+openapi: 3.0.0
+paths:
+  /api.user.v1.User/CreateUser:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUserV1CreateUserInfo'
+        description: 创建用户所需字段
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserV1UserInfoResponse'
+          description: ok
+      tags:
+      - api.user.v1.User
+    summary: CreateUser
+tags:
+- name: api.user.v1.User
+
