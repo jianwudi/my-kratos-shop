@@ -4,11 +4,13 @@ import (
 	"flag"
 	"os"
 
+	"github.com/go-kratos/kratos/v2/transport/http"
+
 	"github.com/go-kratos/kratos/v2/registry"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 
-	"user/internal/conf"
+	"shop/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -25,7 +27,7 @@ import (
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name = "shop.user.service"
+	Name = "shop.api"
 	// Version is the version of the compiled software.
 	Version string
 	// flagconf is the config flag.
@@ -38,17 +40,40 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, rr registry.Registrar) *kratos.App {
+// Set global trace provider 设置链路追逐的方法
+func setTracerProvider(url string) error {
+	// Create the Jaeger exporter
+	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
+	if err != nil {
+		return err
+	}
+	tp := tracesdk.NewTracerProvider(
+		// Set the sampling rate based on the parent span to 100%
+		tracesdk.WithSampler(tracesdk.ParentBased(tracesdk.TraceIDRatioBased(1.0))),
+		// Always be sure to batch in production.
+		tracesdk.WithBatcher(exp),
+		// Record information about this application in an Resource.
+		tracesdk.WithResource(resource.NewSchemaless(
+			semconv.ServiceNameKey.String(Name),
+			attribute.String("env", "dev"),
+		)),
+	)
+	otel.SetTracerProvider(tp)
+	return nil
+}
+
+func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, rr registry.Registrar) *kratos.App {
 	return kratos.New(
-		kratos.ID(id+"user service"),
+		kratos.ID(id+"shop.api"),
 		kratos.Name(Name),
 		kratos.Version(Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
 		kratos.Server(
-			gs,
+			hs,
+			//			gs,
 		),
-		kratos.Registrar(rr), // consul 的引入
+		kratos.Registrar(rr),
 	)
 }
 
@@ -78,16 +103,18 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
-	// 加入链路追踪的配置
-	if err := setTracerProvider(bc.Trace.Endpoint); err != nil {
-		panic(err)
-	}
-	// consul 的引入
+
 	var rc conf.Registry
 	if err := c.Scan(&rc); err != nil {
 		panic(err)
 	}
-	app, cleanup, err := initApp(bc.Server, &rc, bc.Data, logger)
+
+	// 加入链路追踪的配置
+	if err := setTracerProvider(bc.Trace.Endpoint); err != nil {
+		panic(err)
+	}
+
+	app, cleanup, err := initApp(bc.Server, bc.Data, bc.Auth, bc.Service, &rc, logger)
 	if err != nil {
 		panic(err)
 	}
@@ -97,25 +124,4 @@ func main() {
 	if err := app.Run(); err != nil {
 		panic(err)
 	}
-}
-
-func setTracerProvider(url string) error {
-	// Create the Jaeger exporter
-	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
-	if err != nil {
-		return err
-	}
-	tp := tracesdk.NewTracerProvider(
-		// Set the sampling rate based on the parent span to 100%
-		tracesdk.WithSampler(tracesdk.ParentBased(tracesdk.TraceIDRatioBased(1.0))),
-		// Always be sure to batch in production.
-		tracesdk.WithBatcher(exp),
-		// Record information about this application in an Resource.
-		tracesdk.WithResource(resource.NewSchemaless(
-			semconv.ServiceNameKey.String(Name),
-			attribute.String("env", "dev"),
-		)),
-	)
-	otel.SetTracerProvider(tp)
-	return nil
 }

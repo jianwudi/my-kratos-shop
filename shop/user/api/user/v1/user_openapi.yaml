@@ -1,0 +1,207 @@
+components:
+  schemas:
+    ApiUserV1CheckResponse:
+      properties:
+        success:
+          type: boolean
+      type: object
+    ApiUserV1CreateUserInfo:
+      properties:
+        mobile:
+          type: string
+        nickName:
+          type: string
+        password:
+          type: string
+      type: object
+    ApiUserV1IdRequest:
+      properties:
+        id:
+          format: int64
+          type: integer
+      type: object
+    ApiUserV1MobileRequest:
+      properties:
+        mobile:
+          type: string
+      type: object
+    ApiUserV1PageInfo:
+      properties:
+        pSize:
+          format: int32
+          type: integer
+        pn:
+          format: int32
+          type: integer
+      type: object
+    ApiUserV1PasswordCheckInfo:
+      properties:
+        encryptedPassword:
+          type: string
+        password:
+          type: string
+      type: object
+    ApiUserV1UpdateUserInfo:
+      properties:
+        birthday:
+          format: int64
+          type: integer
+        gender:
+          type: string
+        id:
+          format: int64
+          type: integer
+        nickName:
+          type: string
+      type: object
+    ApiUserV1UserInfoResponse:
+      properties:
+        birthday:
+          format: int64
+          type: integer
+        gender:
+          type: string
+        id:
+          format: int64
+          type: integer
+        mobile:
+          type: string
+        nickName:
+          type: string
+        password:
+          type: string
+        role:
+          format: int32
+          type: integer
+      type: object
+    ApiUserV1UserListResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ApiUserV1UserInfoResponse'
+          type: array
+        total:
+          format: int32
+          type: integer
+      type: object
+    GoogleProtobufEmpty:
+      type: object
+info:
+  description: api.user.v1
+  title: api.user.v1
+  version: "1"
+openapi: 3.0.0
+paths:
+  /api.user.v1.User/CheckPassword:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUserV1PasswordCheckInfo'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserV1CheckResponse'
+          description: ok
+      tags:
+      - api.user.v1.User
+    summary: CheckPassword
+  /api.user.v1.User/CreateUser:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUserV1CreateUserInfo'
+        description: 创建用户所需字段
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserV1UserInfoResponse'
+          description: ok
+      tags:
+      - api.user.v1.User
+    summary: CreateUser
+  /api.user.v1.User/GetUserById:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUserV1IdRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserV1UserInfoResponse'
+          description: ok
+      tags:
+      - api.user.v1.User
+    summary: GetUserById
+  /api.user.v1.User/GetUserByMobile:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUserV1MobileRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserV1UserInfoResponse'
+          description: ok
+      tags:
+      - api.user.v1.User
+    summary: GetUserByMobile
+  /api.user.v1.User/GetUserList:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUserV1PageInfo'
+        description: 分页
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserV1UserListResponse'
+          description: ok
+      tags:
+      - api.user.v1.User
+    summary: GetUserList
+  /api.user.v1.User/UpdateUser:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiUserV1UpdateUserInfo'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleProtobufEmpty'
+          description: ok
+      tags:
+      - api.user.v1.User
+    summary: UpdateUser
+tags:
+- name: api.user.v1.User
+

@@ -34,16 +34,7 @@ func (u *UserService) CreateUser(ctx context.Context, req *v1.CreateUserInfo) (*
 		return nil, err
 	}
 
-	userInfoRsp := v1.UserInfoResponse{
-		Id:       user.ID,
-		Mobile:   user.Mobile,
-		Password: user.Password,
-		NickName: user.NickName,
-		Gender:   user.Gender,
-		Role:     int32(user.Role),
-		Birthday: user.Birthday,
-	}
-
+	userInfoRsp := UserResponse(user)
 	return &userInfoRsp, nil
 }
 
@@ -74,7 +65,7 @@ func UserResponse(user *biz.User) v1.UserInfoResponse {
 		Role:     int32(user.Role),
 	}
 	if user.Birthday != nil {
-		userInfoRsp.Birthday = uint64(user.Birthday.Unix())
+		userInfoRsp.Birthday = int64(user.Birthday.Unix())
 	}
 	return userInfoRsp
 }

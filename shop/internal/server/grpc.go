@@ -1,24 +1,22 @@
 package server
 
 import (
-	v1 "user/api/user/v1"
-	"user/internal/conf"
-	"user/internal/service"
+	v1 "shop/api/shop/v1"
+	"shop/internal/conf"
+	"shop/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, greeter *service.UserService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, u *service.ShopService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
 			tracing.Server(),
-			logging.Server(logger),
 		),
 	}
 	if c.Grpc.Network != "" {
@@ -31,6 +29,6 @@ func NewGRPCServer(c *conf.Server, greeter *service.UserService, logger log.Logg
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterUserServer(srv, greeter)
+	v1.RegisterShopServer(srv, u)
 	return srv
 }

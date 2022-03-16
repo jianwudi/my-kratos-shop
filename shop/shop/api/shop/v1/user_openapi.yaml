@@ -1,0 +1,132 @@
+components:
+  schemas:
+    ShopShopV1CaptchaReply:
+      properties:
+        captchaId:
+          type: string
+        picPath:
+          type: string
+      type: object
+    ShopShopV1LoginReq:
+      properties:
+        captcha:
+          type: string
+        captchaId:
+          type: string
+        mobile:
+          type: string
+        password:
+          type: string
+      type: object
+    ShopShopV1RegisterReply:
+      properties:
+        expiredAt:
+          format: int64
+          type: integer
+        id:
+          format: int64
+          type: integer
+        mobile:
+          type: string
+        token:
+          type: string
+        username:
+          type: string
+      type: object
+    ShopShopV1RegisterReq:
+      properties:
+        mobile:
+          type: string
+        password:
+          type: string
+        username:
+          type: string
+      type: object
+    ShopShopV1UserDetailResponse:
+      properties:
+        birthday:
+          format: int64
+          type: integer
+        gender:
+          type: string
+        id:
+          format: int64
+          type: integer
+        mobile:
+          type: string
+        nickName:
+          type: string
+        role:
+          format: int32
+          type: integer
+      type: object
+info:
+  description: shop.shop.v1
+  title: shop.shop.v1
+  version: "1"
+openapi: 3.0.0
+paths:
+  /api/users/captcha:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopShopV1CaptchaReply'
+          description: ok
+      tags:
+      - shop.shop.v1.Shop
+    summary: Captcha
+  /api/users/detail:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopShopV1UserDetailResponse'
+          description: ok
+      tags:
+      - shop.shop.v1.Shop
+    summary: Detail
+  /api/users/login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopShopV1LoginReq'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopShopV1RegisterReply'
+          description: ok
+      tags:
+      - shop.shop.v1.Shop
+    summary: Login
+  /api/users/register:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopShopV1RegisterReq'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopShopV1RegisterReply'
+          description: ok
+      tags:
+      - shop.shop.v1.Shop
+    summary: Register
+tags:
+- description: The Shop service definition.
+  name: shop.shop.v1.Shop
+

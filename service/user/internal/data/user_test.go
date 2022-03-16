@@ -1,6 +1,7 @@
 package data_test
 
 import (
+	"time"
 	"user/internal/biz"
 	"user/internal/data"
 	"user/internal/testdata"
@@ -33,5 +34,30 @@ var _ = Describe("User", func() {
 		Ω(total).Should(Equal(1))        // 总数应该为 1，因为上面只创建了一条
 		Ω(len(user)).Should(Equal(1))
 		Ω(user[0].Mobile).Should(Equal("13509876789"))
+	})
+	It("UpdateUser", func() {
+		birthDay := time.Unix(int64(693646426), 0)
+		uD.NickName = "gyl"
+		uD.Birthday = &birthDay
+		uD.Gender = "female"
+		user, err := ro.UpdateUser(ctx, uD)
+		Ω(err).ShouldNot(HaveOccurred()) // 更新不应该出现错误
+		Ω(user).Should(BeTrue())         // 结果应该为 true
+	})
+
+	It("CheckPassword", func() {
+		p1 := "admin"
+		encryptedPassword := "$pbkdf2-sha512$5p7doUNIS9I5mvhA$b18171ff58b04c02ed70ea4f39bda036029c107294bce83301a02fb53a1bcae0"
+		password, err := ro.CheckPassword(ctx, p1, encryptedPassword)
+		Ω(err).ShouldNot(HaveOccurred()) // 密码验证通过
+		Ω(password).Should(BeTrue())     // 结果应该为true
+
+		encryptedPassword1 := "$pbkdf2-sha512$5p7doUNIS9I5mvhA$b18171ff58b04c02ed70ea4f39"
+		password1, err := ro.CheckPassword(ctx, p1, encryptedPassword1)
+		if err != nil {
+			return
+		}
+		Ω(err).ShouldNot(HaveOccurred())
+		Ω(password1).Should(BeFalse()) // 密码验证不通过
 	})
 })
