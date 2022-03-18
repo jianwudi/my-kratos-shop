@@ -1,0 +1,172 @@
+components:
+  schemas:
+    GoodsV1CategoryInfoRequest:
+      properties:
+        id:
+          format: int32
+          type: integer
+        isTab:
+          type: boolean
+        level:
+          format: int32
+          type: integer
+        name:
+          type: string
+        parentCategory:
+          format: int32
+          type: integer
+        sort:
+          format: int32
+          type: integer
+      type: object
+    GoodsV1CategoryInfoResponse:
+      properties:
+        id:
+          format: int32
+          type: integer
+        isTab:
+          type: boolean
+        level:
+          format: int32
+          type: integer
+        name:
+          type: string
+        parentCategory:
+          format: int32
+          type: integer
+        sort:
+          format: int32
+          type: integer
+      type: object
+    GoodsV1GoodsTypeRequest:
+      properties:
+        desc:
+          type: string
+        id:
+          format: int64
+          type: integer
+        isVirtual:
+          type: boolean
+        name:
+          type: string
+        nameAlias:
+          type: string
+        sort:
+          format: int32
+          type: integer
+        typeCode:
+          type: string
+      type: object
+    GoodsV1GoodsTypeResponse:
+      properties:
+        id:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1SpecificationRequest:
+      properties:
+        id:
+          format: int64
+          type: integer
+        isSelect:
+          type: boolean
+        isSku:
+          type: boolean
+        name:
+          type: string
+        sort:
+          format: int32
+          type: integer
+        specificationValue:
+          items:
+            $ref: '#/components/schemas/GoodsV1SpecificationValue'
+          type: array
+        status:
+          type: boolean
+        typeId:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1SpecificationResponse:
+      properties:
+        id:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1SpecificationValue:
+      properties:
+        attrId:
+          format: int64
+          type: integer
+        id:
+          format: int64
+          type: integer
+        sort:
+          format: int32
+          type: integer
+        value:
+          type: string
+      type: object
+info:
+  description: goods.v1
+  title: goods.v1
+  version: "1"
+openapi: 3.0.0
+paths:
+  /goods.v1.Goods/CreateCategory:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoodsV1CategoryInfoRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodsV1CategoryInfoResponse'
+          description: ok
+      tags:
+      - goods.v1.Goods
+    summary: CreateCategory
+  /goods.v1.Goods/CreateGoodsSpecification:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoodsV1SpecificationRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodsV1SpecificationResponse'
+          description: ok
+      tags:
+      - goods.v1.Goods
+    summary: CreateGoodsSpecification
+  /goods.v1.Goods/CreateGoodsType:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoodsV1GoodsTypeRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodsV1GoodsTypeResponse'
+          description: ok
+      tags:
+      - goods.v1.Goods
+    summary: CreateGoodsType
+tags:
+- name: goods.v1.Goods
+
