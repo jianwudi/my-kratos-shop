@@ -38,6 +38,18 @@ func NewGoodsTypeRepo(data *Data, logger log.Logger) biz.GoodsTypeRepo {
 	}
 }
 
+func (p *GoodsType) ToDomain() *domain.GoodsType {
+	return &domain.GoodsType{
+		ID:        p.ID,
+		Name:      p.Name,
+		TypeCode:  p.TypeCode,
+		NameAlias: p.NameAlias,
+		IsVirtual: p.IsVirtual,
+		Desc:      p.Desc,
+		Sort:      p.Sort,
+	}
+}
+
 func (g *goodsTypeRepo) CreateGoodsType(ctx context.Context, req *domain.GoodsType) (int64, error) {
 	goodsType := &GoodsType{
 		Name:      req.Name,
@@ -58,15 +70,5 @@ func (g *goodsTypeRepo) IsExistsByID(ctx context.Context, typeID int64) (*domain
 	if res := g.data.db.First(&goodsType, typeID); res.RowsAffected == 0 {
 		return nil, errors.NotFound("GOODS_TYPE_NOT_FOUND", "商品类型不存在")
 	}
-
-	res := &domain.GoodsType{
-		ID:        goodsType.ID,
-		Name:      goodsType.Name,
-		TypeCode:  goodsType.TypeCode,
-		NameAlias: goodsType.NameAlias,
-		IsVirtual: goodsType.IsVirtual,
-		Desc:      goodsType.Desc,
-		Sort:      goodsType.Sort,
-	}
-	return res, nil
+	return goodsType.ToDomain(), nil
 }

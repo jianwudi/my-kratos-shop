@@ -1,5 +1,94 @@
 components:
   schemas:
+    GoodsV1AttrGroupRequest:
+      properties:
+        desc:
+          type: string
+        id:
+          format: int64
+          type: integer
+        sort:
+          format: int32
+          type: integer
+        status:
+          type: boolean
+        title:
+          type: string
+        typeId:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1AttrGroupResponse:
+      properties:
+        desc:
+          type: string
+        id:
+          format: int64
+          type: integer
+        sort:
+          format: int32
+          type: integer
+        status:
+          type: boolean
+        title:
+          type: string
+        typeId:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1AttrResponse:
+      properties:
+        attrValue:
+          items:
+            $ref: '#/components/schemas/GoodsV1AttrValueResponse'
+          type: array
+        desc:
+          type: string
+        groupId:
+          format: int64
+          type: integer
+        id:
+          format: int64
+          type: integer
+        sort:
+          format: int32
+          type: integer
+        status:
+          type: boolean
+        title:
+          type: string
+        typeId:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1AttrValueRequest:
+      properties:
+        attrId:
+          format: int64
+          type: integer
+        groupId:
+          format: int64
+          type: integer
+        id:
+          format: int64
+          type: integer
+        value:
+          type: string
+      type: object
+    GoodsV1AttrValueResponse:
+      properties:
+        attrId:
+          format: int64
+          type: integer
+        groupId:
+          format: int64
+          type: integer
+        id:
+          format: int64
+          type: integer
+        value:
+          type: string
+      type: object
     GoodsV1CategoryInfoRequest:
       properties:
         id:
@@ -36,6 +125,67 @@ components:
           type: integer
         sort:
           format: int32
+          type: integer
+      type: object
+    GoodsV1CreateGoodsRequest:
+      properties:
+        brandId:
+          format: int32
+          type: integer
+        categoryId:
+          format: int32
+          type: integer
+        goodsBrief:
+          type: string
+        goodsFrontImage:
+          type: string
+        goodsImages:
+          items:
+            type: string
+          type: array
+        goodsSn:
+          type: string
+        goodsTags:
+          type: string
+        id:
+          format: int64
+          type: integer
+        inventory:
+          format: int64
+          type: integer
+        isHot:
+          type: boolean
+        isNew:
+          type: boolean
+        marketPrice:
+          format: int64
+          type: integer
+        name:
+          type: string
+        nameAlias:
+          type: string
+        onSale:
+          type: boolean
+        shipFree:
+          type: boolean
+        shipId:
+          format: int32
+          type: integer
+        shopPrice:
+          format: int64
+          type: integer
+        sku:
+          items:
+            $ref: '#/components/schemas/GoodsV1CreateGoodsRequestGoodsSku'
+          type: array
+        typeId:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1CreateGoodsResponse:
+      properties:
+        ID:
+          format: int64
           type: integer
       type: object
     GoodsV1GoodsTypeRequest:
@@ -113,6 +263,48 @@ info:
   version: "1"
 openapi: 3.0.0
 paths:
+  /goods.v1.Goods/CreateAttrGroup:
+    description: 商品参数属性分组名
+    post:
+      description: 商品参数属性分组名
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoodsV1AttrGroupRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodsV1AttrGroupResponse'
+          description: ok
+      summary: 商品参数属性分组名
+      tags:
+      - goods.v1.Goods
+    summary: CreateAttrGroup
+  /goods.v1.Goods/CreateAttrValue:
+    description: 商品参数属性名和值
+    post:
+      description: 商品参数属性名和值
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoodsV1AttrValueRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodsV1AttrResponse'
+          description: ok
+      summary: 商品参数属性名和值
+      tags:
+      - goods.v1.Goods
+    summary: CreateAttrValue
   /goods.v1.Goods/CreateCategory:
     post:
       requestBody:
@@ -131,6 +323,24 @@ paths:
       tags:
       - goods.v1.Goods
     summary: CreateCategory
+  /goods.v1.Goods/CreateGoods:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoodsV1CreateGoodsRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodsV1CreateGoodsResponse'
+          description: ok
+      tags:
+      - goods.v1.Goods
+    summary: CreateGoods
   /goods.v1.Goods/CreateGoodsSpecification:
     post:
       requestBody:

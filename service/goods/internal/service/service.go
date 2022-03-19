@@ -15,10 +15,22 @@ type GoodsService struct {
 	v1.UnimplementedGoodsServer
 	cac *biz.CategoryUsecase
 	gt  *biz.GoodsTypeUsecase
+	bc  *biz.BrandUsecase
 	s   *biz.SpecificationUsecase
+	ga  *biz.GoodsAttrUsecase
+	g   *biz.GoodsUsecase
 	log *log.Helper
 }
 
-func NewGoodsService(cac *biz.CategoryUsecase, gt *biz.GoodsTypeUsecase, s *biz.SpecificationUsecase, logger log.Logger) *GoodsService {
-	return &GoodsService{cac: cac, gt: gt, s: s, log: log.NewHelper(logger)}
+func NewGoodsService(bc *biz.BrandUsecase, cac *biz.CategoryUsecase, gt *biz.GoodsTypeUsecase,
+	s *biz.SpecificationUsecase, ga *biz.GoodsAttrUsecase, gc *biz.GoodsUsecase, logger log.Logger) *GoodsService {
+	return &GoodsService{
+		bc:  bc,
+		cac: cac,
+		gt:  gt,
+		s:   s,
+		ga:  ga,
+		g:   gc,
+		log: log.NewHelper(logger),
+	}
 }

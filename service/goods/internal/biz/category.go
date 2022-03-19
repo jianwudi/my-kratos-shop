@@ -7,41 +7,42 @@ import (
 )
 
 type Category struct {
- ID               int32
- Name             string
- ParentCategoryID int32
- SubCategory      []*Category
- Level            int32
- IsTab            bool
- Sort             int32
+	ID               int32
+	Name             string
+	ParentCategoryID int32
+	SubCategory      []*Category
+	Level            int32
+	IsTab            bool
+	Sort             int32
 }
 
 type CategoryInfo struct {
- ID             int32
- Name           string
- ParentCategory int32
- Level          int32
- IsTab          bool
- Sort           int32
+	ID             int32
+	Name           string
+	ParentCategory int32
+	Level          int32
+	IsTab          bool
+	Sort           int32
 }
 
 type CategoryRepo interface {
- AddCategory(context.Context, *CategoryInfo) (*CategoryInfo, error)
+	AddCategory(context.Context, *CategoryInfo) (*CategoryInfo, error)
+	GetCategoryByID(ctx context.Context, id int32) (*CategoryInfo, error)
 }
 
 type CategoryUsecase struct {
- repo CategoryRepo
- log  *log.Helper
+	repo CategoryRepo
+	log  *log.Helper
 }
 
 func NewCategoryUsecase(repo CategoryRepo, logger log.Logger) *CategoryUsecase {
- return &CategoryUsecase{repo: repo, log: log.NewHelper(logger)}
+	return &CategoryUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
 func (c *CategoryUsecase) CreateCategory(ctx context.Context, r *CategoryInfo) (*CategoryInfo, error) {
- cateInfo, err := c.repo.AddCategory(ctx, r)
- if err != nil {
-  return nil, err
- }
- return cateInfo, nil
+	cateInfo, err := c.repo.AddCategory(ctx, r)
+	if err != nil {
+		return nil, err
+	}
+	return cateInfo, nil
 }

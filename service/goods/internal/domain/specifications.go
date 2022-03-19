@@ -27,3 +27,14 @@ func (b *Specification) IsTypeIDEmpty() bool {
 func (b *Specification) IsValueEmpty() bool {
 	return b.SpecificationValue == nil
 }
+
+type SpecificationList []*Specification
+
+func (p SpecificationList) FindById(id int64) *Specification {
+	for _, item := range p {
+		if item.ID == id {
+			return item
+		}
+	}
+	return nil
+}

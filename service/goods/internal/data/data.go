@@ -2,23 +2,35 @@ package data
 
 import (
 	"context"
+	"goods/internal/biz"
+	"goods/internal/conf"
+	slog "log"
+	"os"
+	"time"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/extra/redisotel"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
-	"goods/internal/biz"
-	"goods/internal/conf"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	slog "log"
-	"os"
-	"time"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewDB, NewTransaction, NewRedis, NewCategoryRepo, NewGoodsTypeRepo, NewSpecificationRepo)
+var ProviderSet = wire.NewSet(
+	NewData, NewDB, NewTransaction,
+	NewRedis,
+	NewBrandRepo,
+	NewCategoryRepo,
+	NewGoodsTypeRepo,
+	NewSpecificationRepo,
+	NewGoodsAttrRepo,
+	NewGoodsRepo,
+	NewGoodsSkuRepoRepo,
+	NewInventoryRepo,
+)
 
 // Data .
 type Data struct {
@@ -83,7 +95,7 @@ func NewDB(c *conf.Data) *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	if err := db.AutoMigrate(&Category{}); err != nil {
+	if err := db.AutoMigrate(&Category{}, &GoodsType{}, &SpecificationsAttr{}, &SpecificationsAttrValue{}); err != nil {
 		panic(err)
 	}
 

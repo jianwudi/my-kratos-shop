@@ -29,6 +29,7 @@ api:
  	       --go-http_out=paths=source_relative:./api \
  	       --go-grpc_out=paths=source_relative:./api \
  	       --openapi_out==paths=source_relative:. \
+		   --validate_out=paths=source_relative,lang=go:. \
 	       $(API_PROTO_FILES)
 
 .PHONY: build
