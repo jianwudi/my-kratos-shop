@@ -29,3 +29,28 @@ services:
     ports:
       - 14268:14268  
       - 16686:16686 
+  es:
+    image: elasticsearch:7.16.3
+    environment:
+        - discovery.type=single-node
+        - ES_JAVA_OPTS=-Xms64m -Xmx128m
+    ports:
+        - "9200:9200"
+        - "9300:9300"    
+    volumes:
+        - /etc/localtime:/etc/localtime
+        - ./elasticsearch/data:/usr/share/elasticsearch/data
+        - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+        - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
+  kibana:
+    depends_on:
+        - es
+    image: kibana:7.16.3
+    environment:
+        - ELASTICSEARCH_HOSTS=http://es:9200
+    volumes:
+        - /etc/localtime:/etc/localtime
+    ports:
+        - "5601:5601"    
+    links:
+        - es
