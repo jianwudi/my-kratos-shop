@@ -3,9 +3,9 @@ package domain
 import "github.com/olivere/elastic/v7"
 
 // 构建查询的时候转换的结构
-type ESGoodsFilter struct {
+/* type ESGoodsFilter struct {
 	ID int64
-	/* 	CategoryID  int32
+	CategoryID  int32
 	   	BrandsID    int32
 	   	Keywords    string
 	   	OnSale      bool
@@ -18,8 +18,8 @@ type ESGoodsFilter struct {
 	   	MaxPrice    int64
 	   	MinPrice    int64
 	   	Pages       int64
-	   	PagePerNums int64 */
-}
+	   	PagePerNums int64
+} */
 
 // 构建插入es 的时候所需的结构，json 的意思是，存入到es 中显示的字段名
 type ESGoods struct {

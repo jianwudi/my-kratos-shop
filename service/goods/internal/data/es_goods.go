@@ -12,8 +12,6 @@ import (
 func (esGoodsRepo) GetIndexName() string {
 	return "goods"
 }
-
-// GetMapping 设计商品的 mapping 结构
 func (esGoodsRepo) GetMapping() string {
 	goodsMapping := `
     {
@@ -21,8 +19,23 @@ func (esGoodsRepo) GetMapping() string {
         "properties": {
             "id": {
                 "type": "integer"
+            }
+        }
+    }
+}`
+	return goodsMapping
+}
+
+// GetMapping 设计商品的 mapping 结构
+/* func (esGoodsRepo) GetMapping() string {
+	goodsMapping := `
+    {
+    "mappings": {
+        "properties": {
+            "id": {
+                "type": "integer"
             },
-            "brands_id": {
+             "brands_id": {
                 "type": "integer"
             },
             "category_id": {
@@ -98,7 +111,7 @@ func (esGoodsRepo) GetMapping() string {
     }
 }`
 	return goodsMapping
-}
+} */
 
 type esGoodsRepo struct {
 	data *Data
