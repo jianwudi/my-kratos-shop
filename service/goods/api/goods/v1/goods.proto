@@ -15,6 +15,7 @@ service Goods {
     // 商品参数属性名和值
   rpc CreateAttrValue(AttrValueRequest) returns(AttrResponse);
   rpc CreateGoods(CreateGoodsRequest) returns (CreateGoodsResponse);
+  rpc GoodsList(GoodsFilterRequest) returns(GoodsListResponse);
 }
 
 message CategoryInfoRequest {
@@ -185,4 +186,48 @@ message CreateGoodsRequest {
 
 message CreateGoodsResponse {
   int64 ID = 1;
+}
+
+message GoodsFilterRequest  {
+  string keywords = 1;
+  int32 categoryId = 2;
+  int32 brandId = 3;
+  int64 minPrice = 4;
+  int64 maxPrice = 5;
+  bool  isHot = 6;
+  bool  isNew = 7;
+  bool  isTab = 8;
+  int64 clickNum = 9;
+  int64 soldNum = 10;
+  int64 favNum = 11;
+  int64 pages = 12;
+  int64 pagePerNums = 13;
+  int64 id = 14;
+}
+
+// 返回的每个商品的具体信息，这里为了演示
+// 并没有加入 sku 、brand 等信息，可自行添加
+message GoodsInfoResponse {
+  int64 id = 1;
+  int32 categoryId = 2;
+  int32 brandId = 3;
+  string name = 4;
+  string goodsSn = 5;
+  int64 clickNum = 6;
+  int64 soldNum = 7;
+  int64 favNum = 8;
+  int64 marketPrice = 9;
+  string goodsBrief = 10;
+  string goodsDesc = 11;
+  bool shipFree = 12;
+  string images = 13;
+  repeated string goodsImages = 14;
+  bool isNew = 15;
+  bool isHot = 16;
+  bool onSale = 17;
+}
+
+message GoodsListResponse {
+  int64 total = 1;
+  repeated GoodsInfoResponse list = 2;
 }
