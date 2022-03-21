@@ -12,6 +12,7 @@ import (
 	"github.com/go-redis/redis/extra/redisotel"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
+	"github.com/olivere/elastic/v7"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -22,6 +23,7 @@ import (
 var ProviderSet = wire.NewSet(
 	NewData, NewDB, NewTransaction,
 	NewRedis,
+	NewElasticsearch,
 	NewBrandRepo,
 	NewCategoryRepo,
 	NewGoodsTypeRepo,
@@ -30,22 +32,28 @@ var ProviderSet = wire.NewSet(
 	NewGoodsRepo,
 	NewGoodsSkuRepoRepo,
 	NewInventoryRepo,
+	NewEsGoodsRepo,
 )
 
 // Data .
 type Data struct {
-	db  *gorm.DB
-	rdb *redis.Client
+	db       *gorm.DB
+	rdb      *redis.Client
+	EsClient *elastic.Client
 }
 
 // 用来承载事务的上下文
 type contextTxKey struct{}
 
-func NewData(c *conf.Data, logger log.Logger, db *gorm.DB, rdb *redis.Client) (*Data, func(), error) {
+func NewData(c *conf.Data, logger log.Logger, db *gorm.DB, rdb *redis.Client, es *elastic.Client) (*Data, func(), error) {
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
 	}
-	return &Data{db: db, rdb: rdb}, cleanup, nil
+	return &Data{
+		db:       db,
+		rdb:      rdb,
+		EsClient: es,
+	}, cleanup, nil
 }
 
 // NewTransaction .
@@ -95,7 +103,9 @@ func NewDB(c *conf.Data) *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	if err := db.AutoMigrate(&Category{}, &GoodsType{}, &SpecificationsAttr{}, &SpecificationsAttrValue{}); err != nil {
+	if err := db.AutoMigrate(&Category{}, &GoodsType{}, &GoodsAttrGroup{},
+		&SpecificationsAttr{}, &SpecificationsAttrValue{}, &GoodsSpecificationSku{},
+		&Goods{}, &GoodsAttr{}, &GoodsAttrValue{}, &GoodsSku{}, &GoodsInventory{}); err != nil {
 		panic(err)
 	}
 
@@ -116,4 +126,14 @@ func NewRedis(c *conf.Data) *redis.Client {
 		log.Error(err)
 	}
 	return rdb
+}
+
+func NewElasticsearch(c *conf.Data) *elastic.Client {
+	es, err := elastic.NewClient(elastic.SetURL(c.Elastic.Addr), elastic.SetSniff(false),
+		elastic.SetTraceLog(slog.New(os.Stdout, "shop", slog.LstdFlags)))
+	if err != nil {
+		panic(err)
+	}
+
+	return es
 }

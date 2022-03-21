@@ -188,6 +188,103 @@ components:
           format: int64
           type: integer
       type: object
+    GoodsV1GoodsFilterRequest:
+      properties:
+        brandId:
+          format: int32
+          type: integer
+        categoryId:
+          format: int32
+          type: integer
+        clickNum:
+          format: int64
+          type: integer
+        favNum:
+          format: int64
+          type: integer
+        id:
+          format: int64
+          type: integer
+        isHot:
+          type: boolean
+        isNew:
+          type: boolean
+        isTab:
+          type: boolean
+        keywords:
+          type: string
+        maxPrice:
+          format: int64
+          type: integer
+        minPrice:
+          format: int64
+          type: integer
+        pagePerNums:
+          format: int64
+          type: integer
+        pages:
+          format: int64
+          type: integer
+        soldNum:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1GoodsInfoResponse:
+      properties:
+        brandId:
+          format: int32
+          type: integer
+        categoryId:
+          format: int32
+          type: integer
+        clickNum:
+          format: int64
+          type: integer
+        favNum:
+          format: int64
+          type: integer
+        goodsBrief:
+          type: string
+        goodsDesc:
+          type: string
+        goodsImages:
+          items:
+            type: string
+          type: array
+        goodsSn:
+          type: string
+        id:
+          format: int64
+          type: integer
+        images:
+          type: string
+        isHot:
+          type: boolean
+        isNew:
+          type: boolean
+        marketPrice:
+          format: int64
+          type: integer
+        name:
+          type: string
+        onSale:
+          type: boolean
+        shipFree:
+          type: boolean
+        soldNum:
+          format: int64
+          type: integer
+      type: object
+    GoodsV1GoodsListResponse:
+      properties:
+        list:
+          items:
+            $ref: '#/components/schemas/GoodsV1GoodsInfoResponse'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
     GoodsV1GoodsTypeRequest:
       properties:
         desc:
@@ -377,6 +474,24 @@ paths:
       tags:
       - goods.v1.Goods
     summary: CreateGoodsType
+  /goods.v1.Goods/GoodsList:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoodsV1GoodsFilterRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodsV1GoodsListResponse'
+          description: ok
+      tags:
+      - goods.v1.Goods
+    summary: GoodsList
 tags:
 - name: goods.v1.Goods
 
